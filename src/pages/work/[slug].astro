@@ -189,7 +189,10 @@ const props = Astro.props as Props;
           <p class="meta">
             <span>{props.earlier.year}</span>
             <span class="kind">
-              {props.earlier.status === 'live' ? 'Live site' : 'Project page — not a running app'}
+              {props.earlier.badge ??
+                (props.earlier.status === 'live'
+                  ? 'Live site'
+                  : 'Project page — not a running app')}
             </span>
           </p>
           <h1>{props.earlier.title}</h1>
@@ -204,7 +207,11 @@ const props = Astro.props as Props;
       <div class="wrap body">
         {props.earlier.note && (
           <section class="block notice" role="note">
-            <h2>Why there is no live demo</h2>
+            <h2>
+              {props.earlier.status === 'live'
+                ? 'How the live demo works'
+                : 'Why there is no live demo'}
+            </h2>
             <p>{props.earlier.note}</p>
           </section>
         )}

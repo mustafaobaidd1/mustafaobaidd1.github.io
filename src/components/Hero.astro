@@ -6,14 +6,14 @@ import Icon from './Icon.astro';
 ---
 
 <section class="hero" aria-labelledby="hero-title">
-  <div class="wrap">
-    <p class="eyebrow kicker">
-      Mustafa Obaid <span aria-hidden="true">—</span> software engineer
-    </p>
-    <h1 id="hero-title" class="title">
-      Interactive models of mathematics, physics <span class="amp">&amp;</span> computation.
-    </h1>
-    <div class="intro">
+  <div class="wrap top">
+    <div class="lead">
+      <p class="eyebrow kicker">
+        Mustafa Obaid <span aria-hidden="true">—</span> software engineer
+      </p>
+      <h1 id="hero-title" class="title">
+        Interactive models of mathematics, physics <span class="amp">&amp;</span> computation.
+      </h1>
       <p class="serif lede">
         Ten browser-based instruments: a GPU wind tunnel, a spectral sky, a SAT-solving scheduler, a
         QR code you can scratch and still read, and more. Each one documents its model, how it was
@@ -28,12 +28,27 @@ import Icon from './Icon.astro';
         </a>
       </div>
     </div>
+
+    <nav class="index" aria-label="Project index">
+      <p class="eyebrow">Index</p>
+      <ol>
+        {projects.map((p) => (
+          <li>
+            <a href={`#${p.slug}`} data-slug={p.slug} style={`--accent:${p.accent}`}>
+              <span class="i-num">{p.number}</span>
+              <span class="i-title">{p.title}</span>
+              <span class="i-sub">{p.short}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
   </div>
 
   <div class="wrap">
     <ol class="spines" aria-label="The ten projects">
       {projects.map((p) => (
-        <li style={`--accent:${p.accent}`}>
+        <li data-slug={p.slug}>
           <a href={`#${p.slug}`}>
             <Image
               src={preview(p.slug)}
@@ -54,9 +69,36 @@ import Icon from './Icon.astro';
   </div>
 </section>
 
+<script>
+  // Hovering or focusing an index entry opens the matching spine below it.
+  const spines = new Map(
+    [...document.querySelectorAll<HTMLElement>('.spines li[data-slug]')].map((li) => [
+      li.dataset.slug,
+      li,
+    ]),
+  );
+  for (const link of document.querySelectorAll<HTMLElement>('.index a[data-slug]')) {
+    const spine = spines.get(link.dataset.slug);
+    if (!spine) continue;
+    const on = () => spine.classList.add('is-active');
+    const off = () => spine.classList.remove('is-active');
+    link.addEventListener('mouseenter', on);
+    link.addEventListener('mouseleave', off);
+    link.addEventListener('focus', on);
+    link.addEventListener('blur', off);
+  }
+</script>
+
 <style>
   .hero {
     padding-top: clamp(2.5rem, 2rem + 4vw, 6rem);
+  }
+
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 21rem);
+    gap: var(--space-6) clamp(2rem, 4vw, 5rem);
+    align-items: start;
   }
 
   .kicker {
@@ -79,15 +121,9 @@ import Icon from './Icon.astro';
     letter-spacing: 0;
   }
 
-  .intro {
-    display: grid;
-    grid-template-columns: minmax(0, 38rem) auto;
-    gap: var(--space-5) var(--space-7);
-    align-items: end;
-    margin-top: var(--space-6);
-  }
-
   .lede {
+    max-width: 38rem;
+    margin-top: var(--space-6);
     font-size: var(--step-1);
     line-height: 1.45;
     color: var(--ink-soft);
@@ -97,6 +133,59 @@ import Icon from './Icon.astro';
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  /* Index: a quiet table of contents beside the headline on wide screens. */
+  .index {
+    padding-top: 0.35rem;
+  }
+
+  .index ol {
+    margin-top: var(--space-3);
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .index a {
+    display: grid;
+    grid-template-columns: 2.2rem minmax(0, auto) minmax(0, 1fr);
+    gap: 0.6rem;
+    align-items: baseline;
+    min-height: 44px;
+    padding-block: 0.55rem;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    transition: padding 200ms var(--ease);
+  }
+
+  .i-num {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+
+  .i-title {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .i-sub {
+    overflow: hidden;
+    font-size: var(--step--1);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--muted);
+  }
+
+  .index a:hover,
+  .index a:focus-visible {
+    padding-left: 0.4rem;
+  }
+
+  .index a:hover .i-num,
+  .index a:focus-visible .i-num {
+    color: var(--accent);
   }
 
   /* The ten spines: each project as a narrow slice that widens on hover/focus. */
@@ -115,7 +204,8 @@ import Icon from './Icon.astro';
   }
 
   .spines li:hover,
-  .spines li:focus-within {
+  .spines li:focus-within,
+  .spines li.is-active {
     flex-grow: 3.2;
   }
 
@@ -143,7 +233,8 @@ import Icon from './Icon.astro';
     transition: transform 600ms var(--ease);
   }
 
-  .spines li:hover .spine-img {
+  .spines li:hover .spine-img,
+  .spines li.is-active .spine-img {
     transform: scale(1.06);
   }
 
@@ -172,9 +263,13 @@ import Icon from './Icon.astro';
     text-overflow: ellipsis;
   }
 
-  @media (max-width: 900px) {
-    .intro {
+  @media (max-width: 1100px) {
+    .top {
       grid-template-columns: 1fr;
+    }
+
+    .index {
+      display: none;
     }
   }
 
@@ -201,7 +296,8 @@ import Icon from './Icon.astro';
 
   @media (prefers-reduced-motion: reduce) {
     .spines li,
-    .spine-img {
+    .spine-img,
+    .index a {
       transition: none;
     }
   }

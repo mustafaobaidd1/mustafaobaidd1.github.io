@@ -11,9 +11,9 @@ import ProjectLinks from './ProjectLinks.astro';
       <p class="eyebrow">Before this collection</p>
       <h2 id="earlier-title">Earlier projects</h2>
       <p class="serif note">
-        Front ends and back ends from my studies and internship. Static sites run here as live
-        demos; the server applications get an honest project page instead, because GitHub Pages
-        cannot run a server.
+        Front ends and back ends from my studies and internship. The static sites run as they are,
+        the Django app runs inside your browser through WebAssembly, and the .NET API has a project
+        page instead, because it needs a server that GitHub Pages cannot provide.
       </p>
     </header>
 
@@ -37,7 +37,7 @@ import ProjectLinks from './ProjectLinks.astro';
           <div class="body">
             <p class="status" data-status={e.status}>
               <span class="dot" aria-hidden="true" />
-              {e.status === 'live' ? 'Live site' : 'Project page · needs a server'}
+              {e.badge ?? (e.status === 'live' ? 'Live site' : 'Project page · needs a server')}
               <span class="year">{e.year}</span>
             </p>
             <h3>{e.title}</h3>
@@ -51,7 +51,7 @@ import ProjectLinks from './ProjectLinks.astro';
               title={e.title}
               demo={e.status === 'live' ? e.liveUrl : undefined}
               source={repoUrl(e.slug)}
-              caseStudy={e.status === 'page' ? `/work/${e.slug}/` : undefined}
+              caseStudy={e.status === 'page' || e.note ? `/work/${e.slug}/` : undefined}
             />
           </div>
         </li>

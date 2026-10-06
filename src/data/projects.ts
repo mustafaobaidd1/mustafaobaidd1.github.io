@@ -9,6 +9,8 @@ export interface Project {
   number: string;
   title: string;
   subtitle: string;
+  /** Two or three words for the hero index. */
+  short: string;
   question: string;
   summary: string;
   categories: Category[];
@@ -30,6 +32,8 @@ export interface EarlierProject {
   status: 'live' | 'page';
   year: string;
   liveUrl?: string;
+  /** Short status shown on the card, e.g. how a live demo runs. */
+  badge?: string;
   note?: string;
   run?: string[];
 }
@@ -43,6 +47,7 @@ export const projects: Project[] = [
     number: '01',
     title: 'Kármán',
     subtitle: 'A GPU wind tunnel',
+    short: 'GPU wind tunnel',
     question:
       'How does the shape of an object change the air flowing around it — and the force it feels?',
     summary:
@@ -62,6 +67,7 @@ export const projects: Project[] = [
     number: '02',
     title: 'Scatter',
     subtitle: 'Why the sky is blue',
+    short: 'Spectral sky',
     question:
       'Why is the sky blue and not violet, why are sunsets red — and why are sunsets on Mars blue?',
     summary:
@@ -81,6 +87,7 @@ export const projects: Project[] = [
     number: '03',
     title: 'Heliograph',
     subtitle: 'Sun path and solar panel planner',
+    short: 'Solar planner',
     question:
       'Where is the sun at any moment — and which way should a solar panel face to catch the most of it?',
     summary:
@@ -100,6 +107,7 @@ export const projects: Project[] = [
     number: '04',
     title: 'Strut',
     subtitle: 'Topology optimisation in the browser',
+    short: 'Topology optimiser',
     question:
       'If you know where a part is held and where it is pushed, what is the stiffest shape you can make?',
     summary:
@@ -119,6 +127,7 @@ export const projects: Project[] = [
     number: '05',
     title: 'Fixture',
     subtitle: 'A league scheduler that explains its conflicts',
+    short: 'League scheduler',
     question:
       'Can a whole season be scheduled around everyone’s constraints — and if not, which ones are to blame?',
     summary:
@@ -138,6 +147,7 @@ export const projects: Project[] = [
     number: '06',
     title: 'Quiet Zone',
     subtitle: 'Inside a QR code',
+    short: 'QR anatomy',
     question:
       'How does a QR code still scan when part of it is scratched, torn or covered by a logo?',
     summary:
@@ -157,6 +167,7 @@ export const projects: Project[] = [
     number: '07',
     title: 'Horocycle',
     subtitle: 'Paint on the hyperbolic plane',
+    short: 'Hyperbolic studio',
     question: 'What does a world look like where space grows faster the farther you go?',
     summary:
       'Paint one motif and watch it tile the hyperbolic plane in real time; travel through it and measure triangles whose angles add up to less than 180°.',
@@ -175,6 +186,7 @@ export const projects: Project[] = [
     number: '08',
     title: 'Monochord',
     subtitle: 'The physics of a vibrating string',
+    short: 'String physics',
     question:
       'Why does a guitar sound brighter when plucked near the bridge, and a piano’s low notes slightly out of tune?',
     summary:
@@ -194,6 +206,7 @@ export const projects: Project[] = [
     number: '09',
     title: 'Deep Focus',
     subtitle: 'An atlas of earthquake depths',
+    short: 'Earthquake atlas',
     question:
       'Where do earthquakes happen, how deep — and what do their depths reveal about plates diving into the mantle?',
     summary:
@@ -240,6 +253,7 @@ export const earlierProjects: EarlierProject[] = [
     status: 'live',
     year: '2024',
     liveUrl: `${SITE}/todo-list/`,
+    badge: 'Live demo · Django on WebAssembly',
     note: 'GitHub Pages cannot run a Django server, so the live demo runs the unmodified project inside your browser with Pyodide (CPython compiled to WebAssembly); the database lives in IndexedDB.',
     run: [
       'python -m venv .venv',
@@ -260,7 +274,12 @@ export const earlierProjects: EarlierProject[] = [
     status: 'page',
     year: '2026',
     note: 'A back-end API with a database. It needs a .NET server, so GitHub Pages cannot run it; this page explains what it does and how to run it locally.',
-    run: ['dotnet restore', 'dotnet run', '# then open http://localhost:5199/scalar'],
+    run: [
+      '# needs the .NET 10 SDK',
+      'dotnet restore',
+      'dotnet run',
+      '# then open http://localhost:5048/scalar',
+    ],
   },
 ];
 
