@@ -258,11 +258,11 @@ export const earlierProjects: EarlierProject[] = [
     run: [
       'python -m venv .venv',
       'source .venv/bin/activate  # Windows: .venv\\Scripts\\activate',
-      'pip install django',
+      'pip install "django>=5.0,<6"',
       'python manage.py migrate',
       'python manage.py createsuperuser',
       'python manage.py runserver',
-      '# sign in at /admin/, then open /',
+      '# sign in at /admin/, then open /tasks/',
     ],
   },
   {
