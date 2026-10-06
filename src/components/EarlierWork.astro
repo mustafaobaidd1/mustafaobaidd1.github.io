@@ -1,0 +1,174 @@
+---
+import { Image } from 'astro:assets';
+import { preview } from '../data/images';
+import { earlierProjects, repoUrl } from '../data/projects';
+import ProjectLinks from './ProjectLinks.astro';
+---
+
+<section id="earlier" class="earlier" aria-labelledby="earlier-title">
+  <div class="wrap">
+    <header class="head">
+      <p class="eyebrow">Before this collection</p>
+      <h2 id="earlier-title">Earlier projects</h2>
+      <p class="serif note">
+        Front ends and back ends from my studies and internship. Static sites run here as live
+        demos; the server applications get an honest project page instead, because GitHub Pages
+        cannot run a server.
+      </p>
+    </header>
+
+    <ul class="grid">
+      {earlierProjects.map((e) => (
+        <li class="card">
+          <a
+            class="thumb"
+            href={e.status === 'live' ? e.liveUrl : `/work/${e.slug}/`}
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <Image
+              src={preview(e.slug)}
+              alt=""
+              widths={[400, 700, 1000]}
+              sizes="(max-width: 700px) 100vw, 45vw"
+              class="shot"
+            />
+          </a>
+          <div class="body">
+            <p class="status" data-status={e.status}>
+              <span class="dot" aria-hidden="true" />
+              {e.status === 'live' ? 'Live site' : 'Project page · needs a server'}
+              <span class="year">{e.year}</span>
+            </p>
+            <h3>{e.title}</h3>
+            <p class="summary">{e.summary}</p>
+            <ul class="tags" aria-label="Technologies">
+              {e.tech.map((t) => (
+                <li class="tag">{t}</li>
+              ))}
+            </ul>
+            <ProjectLinks
+              title={e.title}
+              demo={e.status === 'live' ? e.liveUrl : undefined}
+              source={repoUrl(e.slug)}
+              caseStudy={e.status === 'page' ? `/work/${e.slug}/` : undefined}
+            />
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .earlier {
+    margin-top: var(--space-9);
+  }
+
+  .head {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 46rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .head h2 {
+    font-size: var(--step-4);
+    font-variation-settings: 'opsz' 72;
+  }
+
+  .note {
+    margin-top: var(--space-2);
+    color: var(--muted);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    list-style: none;
+  }
+
+  .card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-l);
+    background: var(--paper-raised);
+  }
+
+  .thumb {
+    display: block;
+    overflow: hidden;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-sunk);
+  }
+
+  .shot {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 500ms var(--ease);
+  }
+
+  .thumb:hover .shot {
+    transform: scale(1.03);
+  }
+
+  .body {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: clamp(1rem, 0.8rem + 1vw, 1.75rem);
+  }
+
+  .body h3 {
+    font-size: var(--step-2);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #2f9e62;
+    box-shadow: 0 0 0 3px #2f9e6226;
+  }
+
+  .status[data-status='page'] .dot {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--muted);
+  }
+
+  .year {
+    margin-left: auto;
+  }
+
+  .summary {
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shot {
+      transition: none;
+    }
+  }
+</style>

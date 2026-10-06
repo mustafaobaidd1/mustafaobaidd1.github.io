@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import { projects } from '../data/projects';
+---
+
+<Base title="Page not found · Mustafa Obaid" description="This page does not exist.">
+  <section class="wrap nf">
+    <p class="eyebrow">Error 404</p>
+    <h1>Nothing here.</h1>
+    <p class="serif lede">
+      The page you asked for does not exist. If you were looking for one of the projects, they live
+      at their own addresses:
+    </p>
+    <ul class="list">
+      {projects.map((p) => (
+        <li>
+          <a href={`/${p.slug}/`}>
+            {p.number} · {p.title} — {p.subtitle}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a class="btn btn--solid" href="/">
+      Back to the portfolio
+    </a>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    padding-top: var(--space-8);
+  }
+
+  h1 {
+    font-size: var(--step-6);
+    letter-spacing: -0.035em;
+  }
+
+  .lede {
+    max-width: 40rem;
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+  }
+
+  .list {
+    display: grid;
+    gap: 0.25rem;
+    padding-left: 1.1rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .list a {
+    display: inline-block;
+    padding-block: 0.4rem;
+  }
+</style>

@@ -1,0 +1,149 @@
+---
+import { allCategories, projects } from '../data/projects';
+import Plate from './Plate.astro';
+
+const used = allCategories.filter((c) => projects.some((p) => p.categories.includes(c)));
+---
+
+<section id="work" class="work" aria-labelledby="work-title">
+  <div class="wrap">
+    <header class="head">
+      <div>
+        <p class="eyebrow">Selected work · {projects.length} projects</p>
+        <h2 id="work-title">Working models</h2>
+      </div>
+      <p class="serif note">
+        Every project opens on a running example. Live demos run entirely in the browser; source
+        code, tests and a write-up of the model live in each repository.
+      </p>
+    </header>
+
+    <div class="filters" role="group" aria-label="Filter projects by subject" hidden data-filters>
+      <button type="button" class="chip" aria-pressed="true" data-filter="all">
+        All
+      </button>
+      {used.map((c) => (
+        <button type="button" class="chip" aria-pressed="false" data-filter={c}>
+          {c}
+        </button>
+      ))}
+      <p class="count" aria-live="polite" data-count></p>
+    </div>
+
+    <div class="plates">
+      {projects.map((p, i) => (
+        <Plate project={p} index={i} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const group = document.querySelector<HTMLElement>('[data-filters]');
+  if (group) {
+    group.hidden = false;
+    const chips = [...group.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const plates = [...document.querySelectorAll<HTMLElement>('.plate[data-categories]')];
+    const count = group.querySelector<HTMLElement>('[data-count]');
+
+    const apply = (filter: string) => {
+      let shown = 0;
+      for (const plate of plates) {
+        const match =
+          filter === 'all' || (plate.dataset.categories ?? '').split(',').includes(filter);
+        plate.hidden = !match;
+        if (match) shown += 1;
+      }
+      for (const chip of chips)
+        chip.setAttribute('aria-pressed', String(chip.dataset.filter === filter));
+      if (count) {
+        count.textContent =
+          filter === 'all' ? '' : `${shown} ${shown === 1 ? 'project' : 'projects'} in ${filter}`;
+      }
+    };
+
+    for (const chip of chips)
+      chip.addEventListener('click', () => apply(chip.dataset.filter ?? 'all'));
+  }
+</script>
+
+<style>
+  .work {
+    margin-top: var(--space-9);
+  }
+
+  .head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+    gap: var(--space-4) var(--space-7);
+    align-items: end;
+    margin-bottom: var(--space-6);
+  }
+
+  .head h2 {
+    margin-top: var(--space-2);
+    font-size: var(--step-5);
+    font-variation-settings: 'opsz' 96;
+    letter-spacing: -0.03em;
+  }
+
+  .note {
+    font-size: var(--step-0);
+    color: var(--muted);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--space-5);
+  }
+
+  .filters[hidden] {
+    display: none;
+  }
+
+  .chip {
+    min-height: 44px;
+    padding: 0.5em 0.95em;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-soft);
+    font: 500 var(--step--1) / 1 var(--font-display);
+    cursor: pointer;
+    transition:
+      background-color 160ms var(--ease),
+      color 160ms var(--ease),
+      border-color 160ms var(--ease);
+  }
+
+  .chip:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .count {
+    margin-left: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--muted);
+  }
+
+  .plates :global(.plate[hidden]) {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .head {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

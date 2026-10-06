@@ -1,0 +1,184 @@
+---
+import { Image } from 'astro:assets';
+import { inkOn } from '../data/color';
+import { preview } from '../data/images';
+import { demoUrl, repoUrl, type Project } from '../data/projects';
+import ProjectLinks from './ProjectLinks.astro';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+
+const { project: p, index } = Astro.props;
+const flip = index % 2 === 1;
+---
+
+<article
+  class:list={['plate', { flip }]}
+  id={p.slug}
+  data-categories={p.categories.join(',')}
+  style={`--accent:${p.accent};--accent-ink:${inkOn(p.accent)}`}
+  aria-labelledby={`${p.slug}-title`}
+>
+  <a class="figure" href={demoUrl(p.slug)} tabindex="-1" aria-hidden="true">
+    <Image
+      src={preview(p.slug)}
+      alt=""
+      widths={[480, 800, 1200, 1600]}
+      sizes="(max-width: 860px) 100vw, 58vw"
+      class="shot"
+    />
+  </a>
+
+  <div class="text">
+    <p class="meta">
+      <span class="num">{p.number}</span>
+      <span class="cats">{p.categories.join(' · ')}</span>
+    </p>
+    <h3 id={`${p.slug}-title`} class="name">
+      {p.title}
+      <span class="sub">{p.subtitle}</span>
+    </h3>
+    <p class="question serif">{p.question}</p>
+    <p class="summary">{p.summary}</p>
+
+    <ul class="tags" aria-label="Technologies">
+      {p.tech.map((t) => (
+        <li class="tag">{t}</li>
+      ))}
+    </ul>
+    <ul class="tags skills" aria-label="Skills">
+      {p.skills.map((s) => (
+        <li class="tag tag--skill">{s}</li>
+      ))}
+    </ul>
+
+    <ProjectLinks
+      title={p.title}
+      demo={demoUrl(p.slug)}
+      source={repoUrl(p.slug)}
+      caseStudy={`/work/${p.slug}/`}
+    />
+  </div>
+</article>
+
+<style>
+  .plate {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-5) clamp(1.5rem, 1rem + 3vw, 4.5rem);
+    align-items: center;
+    padding-block: var(--space-8);
+    border-top: 1px solid var(--rule);
+  }
+
+  .plate.flip {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
+  .plate.flip .figure {
+    order: 2;
+  }
+
+  .figure {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    background: var(--paper-sunk);
+    box-shadow:
+      var(--shadow),
+      inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent);
+    transition: transform 380ms var(--ease);
+  }
+
+  .figure:hover {
+    transform: translateY(-4px);
+  }
+
+  .shot {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+
+  .text {
+    display: grid;
+    gap: var(--space-4);
+    align-content: center;
+  }
+
+  .meta {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.4em;
+    padding: 0.25em 0.45em;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .name {
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--step-4);
+    font-variation-settings: 'opsz' 72;
+  }
+
+  .sub {
+    font-size: var(--step-1);
+    font-weight: 450;
+    letter-spacing: -0.01em;
+    color: var(--muted);
+  }
+
+  .question {
+    font-size: var(--step-1);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  .summary {
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+
+  .skills {
+    margin-top: calc(-1 * var(--space-2));
+  }
+
+  @media (max-width: 860px) {
+    .plate,
+    .plate.flip {
+      grid-template-columns: 1fr;
+    }
+
+    .plate.flip .figure {
+      order: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .figure {
+      transition: none;
+    }
+    .figure:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,208 @@
+---
+import { Image } from 'astro:assets';
+import { preview } from '../data/images';
+import { projects } from '../data/projects';
+import Icon from './Icon.astro';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap">
+    <p class="eyebrow kicker">
+      Mustafa Obaid <span aria-hidden="true">—</span> software engineer
+    </p>
+    <h1 id="hero-title" class="title">
+      Interactive models of mathematics, physics <span class="amp">&amp;</span> computation.
+    </h1>
+    <div class="intro">
+      <p class="serif lede">
+        Ten browser-based instruments: a GPU wind tunnel, a spectral sky, a SAT-solving scheduler, a
+        QR code you can scratch and still read, and more. Each one documents its model, how it was
+        validated, and where it stops being accurate.
+      </p>
+      <div class="actions">
+        <a class="btn btn--solid" href="#work">
+          Browse the work <Icon name="arrow-down" />
+        </a>
+        <a class="btn" href="#earlier">
+          Earlier projects
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <ol class="spines" aria-label="The ten projects">
+      {projects.map((p) => (
+        <li style={`--accent:${p.accent}`}>
+          <a href={`#${p.slug}`}>
+            <Image
+              src={preview(p.slug)}
+              alt=""
+              widths={[240, 480, 720]}
+              sizes="(max-width: 720px) 20vw, 15vw"
+              loading="eager"
+              class="spine-img"
+            />
+            <span class="spine-label">
+              <span class="spine-num">{p.number}</span>
+              <span class="spine-title">{p.title}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(2.5rem, 2rem + 4vw, 6rem);
+  }
+
+  .kicker {
+    margin-bottom: var(--space-5);
+  }
+
+  .title {
+    max-width: 16ch;
+    font-size: var(--step-6);
+    font-weight: 620;
+    font-variation-settings: 'opsz' 96;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+  }
+
+  .amp {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 380;
+    letter-spacing: 0;
+  }
+
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 38rem) auto;
+    gap: var(--space-5) var(--space-7);
+    align-items: end;
+    margin-top: var(--space-6);
+  }
+
+  .lede {
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  /* The ten spines: each project as a narrow slice that widens on hover/focus. */
+  .spines {
+    display: flex;
+    gap: clamp(4px, 0.6vw, 10px);
+    height: clamp(220px, 30vw, 380px);
+    margin-top: var(--space-8);
+    list-style: none;
+  }
+
+  .spines li {
+    flex: 1 1 0;
+    min-width: 0;
+    transition: flex-grow 420ms var(--ease);
+  }
+
+  .spines li:hover,
+  .spines li:focus-within {
+    flex-grow: 3.2;
+  }
+
+  .spines a {
+    position: relative;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--paper-sunk);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent);
+    text-decoration: none;
+    color: #fff;
+  }
+
+  .spines a:focus-visible {
+    outline-offset: 3px;
+  }
+
+  .spine-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.02);
+    transition: transform 600ms var(--ease);
+  }
+
+  .spines li:hover .spine-img {
+    transform: scale(1.06);
+  }
+
+  .spine-label {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 2.5rem 0.7rem 0.7rem;
+    background: linear-gradient(to top, #000000b8, #00000000);
+  }
+
+  .spine-num {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+  }
+
+  .spine-title {
+    overflow: hidden;
+    font-size: var(--step--1);
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 900px) {
+    .intro {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .spines {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      height: auto;
+    }
+
+    .spines a {
+      aspect-ratio: 3 / 4;
+      height: auto;
+    }
+
+    .spine-title {
+      display: none;
+    }
+
+    .spine-label {
+      padding: 1.6rem 0.45rem 0.45rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spines li,
+    .spine-img {
+      transition: none;
+    }
+  }
+</style>

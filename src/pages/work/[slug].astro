@@ -1,0 +1,496 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '../../components/Icon.astro';
+import ProjectLinks from '../../components/ProjectLinks.astro';
+import { inkOn } from '../../data/color';
+import { mobilePreview, preview } from '../../data/images';
+import {
+  demoUrl,
+  earlierProjects,
+  projects,
+  repoUrl,
+  type EarlierProject,
+  type Project,
+} from '../../data/projects';
+import Base from '../../layouts/Base.astro';
+
+export function getStaticPaths() {
+  return [
+    ...projects.map((p, i) => ({
+      params: { slug: p.slug },
+      props: {
+        kind: 'new' as const,
+        project: p,
+        prev: projects[(i - 1 + projects.length) % projects.length],
+        next: projects[(i + 1) % projects.length],
+      },
+    })),
+    ...earlierProjects.map((e) => ({
+      params: { slug: e.slug },
+      props: { kind: 'earlier' as const, earlier: e },
+    })),
+  ];
+}
+
+type Props =
+  | { kind: 'new'; project: Project; prev: Project; next: Project }
+  | { kind: 'earlier'; earlier: EarlierProject };
+
+const props = Astro.props as Props;
+---
+
+{props.kind === 'new' ? (
+  <Base
+    title={`${props.project.title} — ${props.project.subtitle} · Mustafa Obaid`}
+    description={props.project.summary}
+  >
+    <article
+      class="case"
+      style={`--accent:${props.project.accent};--accent-ink:${inkOn(props.project.accent)}`}
+    >
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/#work">Work</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{props.project.number}</span>
+        </nav>
+
+        <header class="intro">
+          <p class="meta">
+            <span class="num">{props.project.number}</span>
+            <span>{props.project.categories.join(' · ')}</span>
+            <span class="kind">{props.project.kind}</span>
+          </p>
+          <h1>
+            {props.project.title}
+            <span class="sub">{props.project.subtitle}</span>
+          </h1>
+          <p class="question serif">{props.project.question}</p>
+          <ProjectLinks
+            title={props.project.title}
+            demo={demoUrl(props.project.slug)}
+            source={repoUrl(props.project.slug)}
+          />
+        </header>
+      </div>
+
+      <div class="wrap shots">
+        <figure class="desk">
+          <Image
+            src={preview(props.project.slug)}
+            alt={`${props.project.title} on a desktop screen`}
+            widths={[800, 1200, 1600, 2000]}
+            sizes="(max-width: 900px) 100vw, 72vw"
+            loading="eager"
+          />
+        </figure>
+        {(() => {
+          const m = mobilePreview(props.project.slug);
+          return m ? (
+            <figure class="phone">
+              <Image
+                src={m}
+                alt={`${props.project.title} on a phone`}
+                widths={[300, 450, 600]}
+                sizes="(max-width: 900px) 50vw, 20vw"
+              />
+            </figure>
+          ) : null;
+        })()}
+      </div>
+
+      <div class="wrap body">
+        <section class="block lead">
+          <h2 class="visually-hidden">Summary</h2>
+          <p class="serif">{props.project.summary}</p>
+        </section>
+
+        {props.project.features.length > 0 && (
+          <section class="block">
+            <h2>What you can do</h2>
+            <ul class="list">
+              {props.project.features.map((f) => (
+                <li>{f}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {props.project.howItWorks && (
+          <section class="block">
+            <h2>How it works</h2>
+            <p>{props.project.howItWorks}</p>
+          </section>
+        )}
+
+        {props.project.challenge && (
+          <section class="block">
+            <h2>The hard part</h2>
+            <p>{props.project.challenge}</p>
+          </section>
+        )}
+
+        {props.project.validation.length > 0 && (
+          <section class="block">
+            <h2>Validation</h2>
+            <dl class="facts">
+              {props.project.validation.map((v) => (
+                <div>
+                  <dt>{v.label}</dt>
+                  <dd>{v.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        <section class="block">
+          <h2>Built with</h2>
+          <ul class="tags" aria-label="Technologies">
+            {props.project.tech.map((t) => (
+              <li class="tag">{t}</li>
+            ))}
+          </ul>
+          <h2 class="sub-h">Skills it demonstrates</h2>
+          <ul class="tags" aria-label="Skills">
+            {props.project.skills.map((s) => (
+              <li class="tag tag--skill">{s}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      <nav class="wrap pager" aria-label="More projects">
+        <a href={`/work/${props.prev.slug}/`} class="pg prev">
+          <span class="eyebrow">Previous</span>
+          <span class="pg-title">
+            {props.prev.number} · {props.prev.title}
+          </span>
+        </a>
+        <a href={`/work/${props.next.slug}/`} class="pg next">
+          <span class="eyebrow">Next</span>
+          <span class="pg-title">
+            {props.next.number} · {props.next.title}
+          </span>
+        </a>
+      </nav>
+    </article>
+  </Base>
+) : (
+  <Base title={`${props.earlier.title} · Mustafa Obaid`} description={props.earlier.summary}>
+    <article class="case earlier-case">
+      <div class="wrap">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/#earlier">Earlier projects</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{props.earlier.title}</span>
+        </nav>
+        <header class="intro">
+          <p class="meta">
+            <span>{props.earlier.year}</span>
+            <span class="kind">
+              {props.earlier.status === 'live' ? 'Live site' : 'Project page — not a running app'}
+            </span>
+          </p>
+          <h1>{props.earlier.title}</h1>
+          <p class="question serif">{props.earlier.summary}</p>
+          <ProjectLinks
+            title={props.earlier.title}
+            demo={props.earlier.status === 'live' ? props.earlier.liveUrl : undefined}
+            source={repoUrl(props.earlier.slug)}
+          />
+        </header>
+      </div>
+      <div class="wrap body">
+        {props.earlier.note && (
+          <section class="block notice" role="note">
+            <h2>Why there is no live demo</h2>
+            <p>{props.earlier.note}</p>
+          </section>
+        )}
+        {props.earlier.run && (
+          <section class="block">
+            <h2>Run it locally</h2>
+            <!-- prettier-ignore -->
+            <pre tabindex="0" aria-label="Commands to run the project locally"><code>{props.earlier.run.join('\n')}</code></pre>
+            <p class="small">
+              Full instructions are in the repository README.
+              <a href={repoUrl(props.earlier.slug)}>
+                Open the repository <Icon name="external" />
+              </a>
+            </p>
+          </section>
+        )}
+        <section class="block">
+          <h2>Built with</h2>
+          <ul class="tags" aria-label="Technologies">
+            {props.earlier.tech.map((t) => (
+              <li class="tag">{t}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </article>
+  </Base>
+)}
+
+<style>
+  .case {
+    padding-top: var(--space-6);
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .intro {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 52rem;
+    margin-top: var(--space-4);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .num {
+    padding: 0.25em 0.5em;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+
+  .kind {
+    padding: 0.2em 0.55em;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+  }
+
+  h1 {
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--step-6);
+    font-variation-settings: 'opsz' 96;
+    letter-spacing: -0.035em;
+  }
+
+  .sub {
+    font-size: var(--step-2);
+    font-weight: 450;
+    letter-spacing: -0.015em;
+    color: var(--muted);
+  }
+
+  .question {
+    font-size: var(--step-2);
+    font-style: italic;
+    line-height: 1.35;
+  }
+
+  .shots {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.28fr);
+    gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    align-items: end;
+    margin-top: var(--space-8);
+  }
+
+  .shots figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    box-shadow:
+      var(--shadow),
+      inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent);
+    background: var(--paper-sunk);
+  }
+
+  .shots .phone {
+    border-radius: 26px;
+  }
+
+  .shots:not(:has(.phone)) {
+    grid-template-columns: 1fr;
+  }
+
+  .body {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--space-7) var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  .block {
+    grid-column: 1 / span 7;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+
+  .block h2 {
+    font-size: var(--step-2);
+  }
+
+  .block .sub-h {
+    margin-top: var(--space-4);
+    font-size: var(--step-1);
+  }
+
+  .lead {
+    grid-column: 1 / -1;
+    max-width: 48rem;
+  }
+
+  .lead p {
+    font-size: var(--step-2);
+    line-height: 1.35;
+  }
+
+  .list {
+    display: grid;
+    gap: 0.6rem;
+    padding-left: 1.1rem;
+  }
+
+  .list li::marker {
+    color: var(--accent);
+  }
+
+  .facts {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .facts div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .facts dt {
+    color: var(--muted);
+  }
+
+  .facts dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .notice {
+    padding: var(--space-5);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--paper-raised);
+  }
+
+  pre {
+    margin: 0;
+    padding: var(--space-4) var(--space-5);
+    overflow-x: auto;
+    border-radius: var(--radius);
+    background: var(--paper-sunk);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.7;
+  }
+
+  .small {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .small a {
+    display: inline-flex;
+    gap: 0.3em;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-9);
+  }
+
+  .pg {
+    display: grid;
+    gap: 0.35rem;
+    padding: var(--space-5);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color 160ms var(--ease);
+  }
+
+  .pg:hover {
+    border-color: var(--ink);
+  }
+
+  .next {
+    text-align: right;
+  }
+
+  .pg-title {
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .block {
+      grid-column: 1 / -1;
+    }
+    .shots {
+      grid-template-columns: 1fr;
+    }
+    .shots .phone {
+      width: min(60%, 280px);
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .pager {
+      grid-template-columns: 1fr;
+    }
+    .next {
+      text-align: left;
+    }
+    .facts div {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+  }
+</style>

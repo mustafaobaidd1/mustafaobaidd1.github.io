@@ -1,0 +1,77 @@
+---
+import { OWNER } from '../data/projects';
+---
+
+<section id="about" class="about" aria-labelledby="about-title">
+  <div class="wrap grid">
+    <div>
+      <p class="eyebrow">About</p>
+      <h2 id="about-title">Mustafa Obaid</h2>
+    </div>
+    <div class="text">
+      <p class="serif lede">
+        Software engineer with a B.Sc. in Software Engineering from Philadelphia University, Jordan,
+        working mostly on the web, with a soft spot for interface design and for making technical
+        ideas easy to see.
+      </p>
+      <p>
+        The projects above are where those interests meet: each starts from a real question, models
+        it carefully, checks the model against known results, and puts it in an interface you can
+        explore without reading the theory first.
+      </p>
+      <ul class="links">
+        <li>
+          <a class="btn" href={`https://github.com/${OWNER}`} rel="me">
+            GitHub · {OWNER}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    margin-top: var(--space-9);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: var(--space-5) var(--space-8);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--rule);
+  }
+
+  h2 {
+    margin-top: var(--space-2);
+    font-size: var(--step-4);
+    font-variation-settings: 'opsz' 72;
+  }
+
+  .text {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 40rem;
+  }
+
+  .lede {
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+
+  .text > p:not(.lede) {
+    color: var(--ink-soft);
+  }
+
+  .links {
+    list-style: none;
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

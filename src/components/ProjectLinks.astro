@@ -1,0 +1,68 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  demo?: string;
+  demoLabel?: string;
+  source: string;
+  caseStudy?: string;
+}
+
+const { title, demo, demoLabel = 'Live demo', source, caseStudy } = Astro.props;
+---
+
+<div class="links">
+  {demo && (
+    <a class="btn btn--solid" href={demo}>
+      <Icon name="play" />
+      {demoLabel}
+      <span class="visually-hidden">: {title} (opens the running app)</span>
+    </a>
+  )}
+  <a class="btn" href={source}>
+    <Icon name="code" />
+    Source code<span class="visually-hidden">: {title} on GitHub</span>
+  </a>
+  {caseStudy && (
+    <a class="more" href={caseStudy}>
+      Case study<span class="visually-hidden">: {title}</span>
+      <Icon name="arrow-right" />
+    </a>
+  )}
+</div>
+
+<style>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 0.75rem;
+  }
+
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    min-height: 44px;
+    padding-inline: 0.35rem;
+    font-size: var(--step--1);
+    font-weight: 550;
+    text-decoration: none;
+    color: var(--ink-soft);
+  }
+
+  .more:hover {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+
+  .more :global(.icon) {
+    transition: transform 160ms var(--ease);
+  }
+
+  .more:hover :global(.icon) {
+    transform: translateX(3px);
+  }
+</style>

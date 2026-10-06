@@ -1,0 +1,36 @@
+{
+  "name": "mustafaobaidd1.github.io",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Portfolio of Mustafa Obaid — interactive models of mathematics, physics and computation.",
+  "license": "MIT",
+  "author": "Mustafa Obaid",
+  "scripts": {
+    "dev": "astro dev --port 5300",
+    "build": "astro build",
+    "preview": "astro preview --port 5400",
+    "typecheck": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:e2e": "playwright test",
+    "check:links": "node scripts/check-links.mjs",
+    "check": "npm run typecheck && npm run format:check && npm run build && npm run test:e2e"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/martian-mono": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "astro": "^7.3.6"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/sitemap": "^3.7.4",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "sharp": "^0.35.5",
+    "typescript": "~6.0.3"
+  }
+}
