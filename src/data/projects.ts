@@ -237,9 +237,10 @@ export const earlierProjects: EarlierProject[] = [
     summary:
       'A Django task manager built during a full-stack internship: a per-user task list with detail, create, edit and delete views, a ModelForm and server-rendered templates on SQLite.',
     tech: ['Python', 'Django', 'SQLite'],
-    status: 'page',
+    status: 'live',
     year: '2024',
-    note: 'A server-rendered Django application. GitHub Pages only serves static files, so this page describes it instead of running it.',
+    liveUrl: `${SITE}/todo-list/`,
+    note: 'GitHub Pages cannot run a Django server, so the live demo runs the unmodified project inside your browser with Pyodide (CPython compiled to WebAssembly); the database lives in IndexedDB.',
     run: [
       'python -m venv .venv',
       'source .venv/bin/activate  # Windows: .venv\\Scripts\\activate',
