@@ -221,6 +221,26 @@ export const projects: Project[] = [
     validation: [],
     kind: 'explorer',
   },
+  {
+    slug: 'lensing-game',
+    number: '10',
+    title: 'Lensing',
+    subtitle: 'A puzzle game about bending light with gravity',
+    short: 'Puzzle game',
+    question:
+      'Gravity is your only tool: where do you put a moon, a star or a black hole so the light finds its way home?',
+    summary:
+      'Place masses to bend beams of starlight into telescopes. Thirty hand-made levels, an endless mode and a level editor — the one project here made purely for fun.',
+    categories: ['Game', 'Physics', 'Graphics'],
+    tech: ['TypeScript', 'Canvas', 'Web Audio'],
+    skills: ['Game design', 'Level design', 'Numerical integration'],
+    accent: '#123b6d',
+    features: [],
+    howItWorks: '',
+    challenge: '',
+    validation: [],
+    kind: 'game',
+  },
 ];
 
 export const earlierProjects: EarlierProject[] = [
