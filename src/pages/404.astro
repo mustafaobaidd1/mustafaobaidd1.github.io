@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { projects } from '../data/projects';
+import { demoUrl, projects } from '../data/projects';
 ---
 
 <Base title="Page not found · Mustafa Obaid" description="This page does not exist.">
@@ -14,7 +14,7 @@ import { projects } from '../data/projects';
     <ul class="list">
       {projects.map((p) => (
         <li>
-          <a href={`/${p.slug}/`}>
+          <a href={demoUrl(p.slug)}>
             {p.number} · {p.title} — {p.subtitle}
           </a>
         </li>
