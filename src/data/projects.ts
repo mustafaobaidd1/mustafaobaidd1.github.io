@@ -153,13 +153,37 @@ export const projects: Project[] = [
     summary:
       'Encode, scratch and decode a QR code with an encoder and decoder written from scratch, and watch Reed–Solomon error correction repair the damage.',
     categories: ['Mathematics', 'Algorithms'],
-    tech: ['TypeScript', 'Svelte', 'SVG'],
+    tech: ['TypeScript', 'Svelte', 'SVG', 'KaTeX'],
     skills: ['Finite fields', 'Error-correcting codes', 'Information design'],
     accent: '#1f4bff',
-    features: [],
-    howItWorks: '',
-    challenge: '',
-    validation: [],
+    features: [
+      'Scratch, erase, tear, add a logo sticker or random noise; the decoder reruns on every pointer move.',
+      'Per-block error budgets show how close each Reed–Solomon block is to failing, and why it failed.',
+      'Hover any module to see its role, down to "data bit 3 of codeword 17 in block 2".',
+      'An eight-step story walks your own message from text to bits, codewords, interleaving, placement, masking and back.',
+      'Export the undamaged code as SVG or PNG; it scans with a phone.',
+    ],
+    howItWorks:
+      'Codewords live in the finite field GF(256). Each block gets n − k Reed–Solomon check codewords, the remainder of a polynomial division, so up to ⌊(n − k)/2⌋ wrong codewords per block can be located and fixed: syndromes, Berlekamp–Massey for the error locator, Chien search for positions and Forney for magnitudes. Format and version information use BCH codes; the eight masks are scored with the standard’s four penalty rules.',
+    challenge:
+      'Writing the whole pipeline from scratch — encoder for all 40 versions and 4 levels, and a decoder with error and erasure correction — and making it fast enough to rerun on every pointer move, while keeping damage anchored to the symbol when the text (and therefore the version) changes.',
+    validation: [
+      {
+        label: 'HELLO WORLD 1-Q codewords, mask and format',
+        value: '13 + 13 exact; mask 6, penalty 314',
+      },
+      {
+        label: 'Spec tables (blocks, capacities, alignment, format, version)',
+        value: 'all rows match',
+      },
+      { label: 'Reed–Solomon, correctable random patterns', value: '10 000 / 10 000 corrected' },
+      {
+        label: 'Beyond capacity (t+1 … t+5 errors)',
+        value: '10 000 / 10 000 flagged, 0 miscorrections',
+      },
+      { label: 'Our codes read by jsQR, all 40 versions', value: '2 000 / 2 000' },
+      { label: 'qrcode (npm) codes read by our decoder', value: '2 000 / 2 000' },
+    ],
     kind: 'explorer',
   },
   {
