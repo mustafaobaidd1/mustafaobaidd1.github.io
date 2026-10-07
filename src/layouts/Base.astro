@@ -13,9 +13,17 @@ interface Props {
   description: string;
   image?: string;
   path?: string;
+  /** Error pages: no canonical URL, and ask search engines not to index them. */
+  noindex?: boolean;
 }
 
-const { title, description, image = '/og-image.png', path = Astro.url.pathname } = Astro.props;
+const {
+  title,
+  description,
+  image = '/og-image.png',
+  path = Astro.url.pathname,
+  noindex = false,
+} = Astro.props;
 const canonical = new URL(path, SITE).toString();
 const ogImage = new URL(image, SITE).toString();
 ---
@@ -28,7 +36,7 @@ const ogImage = new URL(image, SITE).toString();
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Mustafa Obaid" />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#f3f0e8" media="(prefers-color-scheme: light)" />
