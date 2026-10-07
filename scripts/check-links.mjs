@@ -23,7 +23,12 @@ const external = new Map();
 
 for (const page of pages) {
   const html = readFileSync(page, 'utf8');
-  const from = '/' + relative(dist, page).split(sep).join('/').replace(/index\.html$/, '');
+  const from =
+    '/' +
+    relative(dist, page)
+      .split(sep)
+      .join('/')
+      .replace(/index\.html$/, '');
   for (const m of html.matchAll(/\s(?:href|src)="([^"]+)"/g)) {
     const url = m[1].replaceAll('&amp;', '&');
     if (url.startsWith('#') || url.startsWith('mailto:') || url.startsWith('data:')) continue;
@@ -41,9 +46,7 @@ const problems = [];
 for (const [path, from] of internal) {
   const target = join(dist, decodeURIComponent(path));
   const ok =
-    existsSync(target) && statSync(target).isFile()
-      ? true
-      : existsSync(join(target, 'index.html'));
+    existsSync(target) && statSync(target).isFile() ? true : existsSync(join(target, 'index.html'));
   if (!ok) problems.push(`internal 404: ${path} (linked from ${from})`);
 }
 
@@ -53,7 +56,8 @@ if (!internalOnly) {
     entries.map(async ([url, from]) => {
       try {
         let res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
-        if (res.status === 405 || res.status === 403) res = await fetch(url, { redirect: 'follow' });
+        if (res.status === 405 || res.status === 403)
+          res = await fetch(url, { redirect: 'follow' });
         return { url, from, status: res.status };
       } catch (err) {
         return { url, from, status: 0, error: String(err) };
