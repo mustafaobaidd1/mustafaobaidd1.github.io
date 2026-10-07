@@ -73,13 +73,33 @@ export const projects: Project[] = [
     summary:
       'A spectral sky simulator: drag the sun, switch off the physics one piece at a time, and read the spectrum of any point in the sky.',
     categories: ['Physics', 'Graphics'],
-    tech: ['TypeScript', 'WebGL2', 'GLSL'],
+    tech: ['TypeScript', 'WebGL2', 'GLSL', 'Web Workers', 'KaTeX'],
     skills: ['Spectral rendering', 'Radiative transfer', 'Colour science'],
     accent: '#4a86c8',
-    features: [],
-    howItWorks: '',
-    challenge: '',
-    validation: [],
+    features: [
+      'Drag the sun from noon to night and watch the whole sky change colour, rendered from physics at 16 wavelengths.',
+      'Experiments: make scattering wavelength-independent, ask “why not violet?”, switch aerosols, remove the ozone layer.',
+      'Fly from the ground to 400 km and see the atmosphere become a thin glowing shell.',
+      'Tap any point of the sky to read the spectrum reaching your eye there, next to sunlight itself.',
+      'Switch to Mars, where fine dust makes the noon sky butterscotch and the sunset blue.',
+    ],
+    howItWorks:
+      'Each pixel integrates single Rayleigh and Mie scattering with ozone absorption along the view ray through a spherical atmosphere, at 16 wavelengths, then converts the spectrum to colour with the CIE 1931 colour-matching functions and a filmic tone map. A precomputed transmittance table keeps it real-time; Martian dust is computed with Mie theory in a worker.',
+    challenge:
+      'Physically based spectral rendering in a fragment shader that also stays measurable: the GPU image agrees with an independent CPU implementation to within 1/255, and the optical depths match published tables.',
+    validation: [
+      {
+        label: 'Rayleigh optical depth at 400 / 550 / 700 nm (Bodhaine et al. 1999)',
+        value: 'within 0.002 %',
+      },
+      { label: 'Mie test cases (Bohren–Huffman, Wiscombe)', value: 'match to 6 digits' },
+      { label: 'WebGL vs CPU renderer, 6 scenes', value: '≤ 1/255 in every pixel' },
+      { label: '16 wavelengths vs a 5 nm reference', value: 'colour difference ΔE ≤ 1.05' },
+      {
+        label: 'Scene colours: noon zenith / setting-sun horizon / Mars sunset',
+        value: '476 nm / 587 nm / 479 nm',
+      },
+    ],
     kind: 'interactive simulation',
   },
   {
