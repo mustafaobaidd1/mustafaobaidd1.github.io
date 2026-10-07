@@ -27,7 +27,9 @@ test('earlier projects say honestly whether they run', async ({ page }) => {
   await page.goto('/#earlier');
   for (const e of earlierProjects) {
     const card = page.locator('#earlier li.card', { hasText: e.title });
-    await expect(card).toContainText(e.status === 'live' ? 'Live site' : 'needs a server');
+    await expect(card).toContainText(
+      e.badge ?? (e.status === 'live' ? 'Live site' : 'needs a server'),
+    );
   }
 });
 
