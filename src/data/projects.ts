@@ -56,10 +56,27 @@ export const projects: Project[] = [
     tech: ['TypeScript', 'WebGPU', 'WGSL', 'Web Workers'],
     skills: ['Computational fluid dynamics', 'GPU compute', 'Numerical validation'],
     accent: '#ff4d2e',
-    features: [],
-    howItWorks: '',
-    challenge: '',
-    validation: [],
+    features: [
+      'Draw any shape into the flow, or drop in a cylinder, NACA airfoil, plate, car or building — every preset stays editable.',
+      'Smoke, speed, vorticity and pressure views, with tracer particles and a probe for local velocity and pressure.',
+      'Live drag and lift coefficients for each body, a running mean over whole shedding periods, and the Strouhal number.',
+      'Benchmark mode runs the Schäfer–Turek cylinder test and compares the result with the reference values.',
+      'Runs on the GPU with WebGPU, or on the CPU in a Web Worker when WebGPU is not available.',
+    ],
+    howItWorks:
+      'A D2Q9 lattice-Boltzmann solver with two-relaxation-time collisions runs as WGSL compute shaders: each cell holds nine particle populations that collide and stream every step. Bodies use interpolated bounce-back, and forces come from momentum exchange, summed on the GPU and read back every few frames.',
+    challenge:
+      'Matching a CPU reference implementation on the GPU to float32 round-off, keeping the flow stable at low viscosity, and measuring forces precisely enough to compare with a research benchmark — in a browser tab.',
+    validation: [
+      {
+        label: 'Schäfer–Turek 2D-1 (Re 20), drag at 40 cells per diameter',
+        value: '5.6094 vs 5.5795 (+0.35 %)',
+      },
+      { label: '2D-2 (Re 100), Strouhal number', value: '0.3016 (range 0.295–0.305)' },
+      { label: '2D-2 maximum lift coefficient', value: '0.9967 (range 0.99–1.01)' },
+      { label: 'GPU vs CPU after 400 steps', value: 'max velocity difference 3 × 10⁻⁷' },
+      { label: 'Poiseuille flow vs the analytic profile', value: 'L2 error ≈ 10⁻¹⁴' },
+    ],
     kind: 'interactive simulation',
   },
   {
